@@ -399,6 +399,21 @@ export class Color {
 		return new Color(new RGBA(r, g, b, a));
 	}
 
+	blend2(base: Color, factor: number): Color {
+		if (this.rgba.a !== 1 || base.rgba.a !== 1) {
+			return this.transparent(factor);
+		}
+
+		const { r, g, b } = this.rgba;
+
+		return new Color(new RGBA(
+			base.rgba.r - factor * (base.rgba.r - r),
+			base.rgba.g - factor * (base.rgba.g - g),
+			base.rgba.b - factor * (base.rgba.b - b),
+			1
+		));
+	}
+
 	flatten(...backgrounds: Color[]): Color {
 		const background = backgrounds.reduceRight((accumulator, color) => {
 			return Color._flatten(color, accumulator);

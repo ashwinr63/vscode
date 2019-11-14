@@ -4,21 +4,25 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as nls from 'vs/nls';
-import { registerColor, editorBackground, contrastBorder, transparent, editorWidgetBackground, textLinkForeground, lighten, darken, focusBorder, activeContrastBorder, editorWidgetForeground, editorErrorForeground, editorWarningForeground, editorInfoForeground } from 'vs/platform/theme/common/colorRegistry';
+import { registerColor, editorBackground, contrastBorder, transparent, editorWidgetBackground, textLinkForeground, lighten, darken, focusBorder, activeContrastBorder, editorWidgetForeground, editorErrorForeground, editorWarningForeground, editorInfoForeground, blend } from 'vs/platform/theme/common/colorRegistry';
 import { Disposable } from 'vs/base/common/lifecycle';
 import { IThemeService, ITheme } from 'vs/platform/theme/common/themeService';
 import { Color } from 'vs/base/common/color';
 
 // < --- Workbench (not customizable) --- >
 
+const WORKBENCH_BACKGROUND_DARK = Color.fromHex('#252526');
+const WORKBENCH_BACKGROUND_LIGHT = Color.fromHex('#F3F3F3');
+const WORKBENCH_BACKGROUND_HC = Color.fromHex('#000000');
+
 export function WORKBENCH_BACKGROUND(theme: ITheme): Color {
 	switch (theme.type) {
 		case 'dark':
-			return Color.fromHex('#252526');
+			return WORKBENCH_BACKGROUND_DARK;
 		case 'light':
-			return Color.fromHex('#F3F3F3');
+			return WORKBENCH_BACKGROUND_LIGHT;
 		default:
-			return Color.fromHex('#000000');
+			return WORKBENCH_BACKGROUND_HC;
 	}
 }
 
@@ -490,8 +494,9 @@ export const TITLE_BAR_ACTIVE_BACKGROUND = registerColor('titleBar.activeBackgro
 }, nls.localize('titleBarActiveBackground', "Title bar background when the window is active. Note that this color is currently only supported on macOS."));
 
 export const TITLE_BAR_INACTIVE_BACKGROUND = registerColor('titleBar.inactiveBackground', {
-	dark: transparent(TITLE_BAR_ACTIVE_BACKGROUND, 0.6),
-	light: transparent(TITLE_BAR_ACTIVE_BACKGROUND, 0.6),
+	// Prefer non-transparent background for https://github.com/microsoft/vscode/issues/84806
+	dark: blend(TITLE_BAR_ACTIVE_BACKGROUND, WORKBENCH_BACKGROUND_DARK, 0.6),
+	light: blend(TITLE_BAR_ACTIVE_BACKGROUND, WORKBENCH_BACKGROUND_LIGHT, 0.6),
 	hc: null
 }, nls.localize('titleBarInactiveBackground', "Title bar background when the window is inactive. Note that this color is currently only supported on macOS."));
 

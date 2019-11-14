@@ -451,6 +451,16 @@ export function transparent(colorValue: ColorValue, factor: number): ColorFuncti
 	};
 }
 
+export function blend(colorValue: ColorValue, backgroundColorValue: Color, factor: number): ColorFunction {
+	return (theme) => {
+		let color = resolveColorValue(colorValue, theme);
+		if (color) {
+			return color.blend2(backgroundColorValue, factor);
+		}
+		return undefined;
+	};
+}
+
 export function oneOf(...colorValues: ColorValue[]): ColorFunction {
 	return (theme) => {
 		for (let colorValue of colorValues) {
